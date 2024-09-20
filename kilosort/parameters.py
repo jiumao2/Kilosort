@@ -162,7 +162,7 @@ EXTRA_PARAMETERS = {
     },
 
     'whitening_range': {
-        'gui_name': 'whitening range', 'type': int, 'min': 1, 'max': np.inf,
+        'gui_name': 'whitening range', 'type': int, 'min': 0, 'max': np.inf,
         'exclude': [], 'default': 32, 'step': 'preprocessing',
         'description':
             """

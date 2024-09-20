@@ -69,6 +69,9 @@ def get_drift_matrix(ops, dshift, device=torch.device('cuda')):
     return M
 
 def get_whitening_matrix(f, xc, yc, nskip=25, nrange=32):
+    if nrange is None or nrange == 0:
+        print('Skip whitening')
+        return None
     """Get the whitening matrix, use every nskip batches."""
     n_chan = len(f.chan_map)
     # collect the covariance matrix across channels
