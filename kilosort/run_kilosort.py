@@ -462,7 +462,7 @@ def compute_preprocessing(ops, device, tic0=np.nan, file_object=None):
 
     logger.info(f'Preprocessing filters computed in {time.time()-tic : .2f}s; ' +
                 f'total {time.time()-tic0 : .2f}s')
-    logger.debug(f'hp_filter shape: {hp_filter.shape}')
+    logger.debug(f'hp_filter: {hp_filter}')
     logger.debug(f'whiten_mat shape: {whiten_mat.shape}')
 
     return ops

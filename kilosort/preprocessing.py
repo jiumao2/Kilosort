@@ -68,31 +68,6 @@ def get_drift_matrix(ops, dshift, device=torch.device('cuda')):
 
     return M
 
-
-def get_fwav(NT = 30122, fs = 30000, device=torch.device('cuda')):
-    """Precomputes a filter to use for high-pass filtering.
-    
-    To be used with fft in pytorch. Currently depends on NT,
-    but it could get padded for larger NT.
-
-    """
-
-    # a butterworth filter is specified in scipy
-    b,a = butter(3, 300, fs = fs, btype = 'high')
-    
-    # a signal with a single entry is used to compute the impulse response
-    x = np.zeros(NT)
-    x[NT//2] = 1
-    
-    # symmetric filter from scipy
-    wav = filtfilt(b,a , x).copy()
-    wav = torch.from_numpy(wav).to(device).float()
-
-    # the filter will be used directly in the Fourier domain
-    fwav = fft(wav)
-
-    return fwav
-
 def get_whitening_matrix(f, xc, yc, nskip=25, nrange=32):
     """Get the whitening matrix, use every nskip batches."""
     n_chan = len(f.chan_map)
@@ -119,6 +94,9 @@ def get_whitening_matrix(f, xc, yc, nskip=25, nrange=32):
     return Wrot
 
 def get_highpass_filter(fs=30000, cutoff=300, device=torch.device('cuda')):
+    if cutoff is None or cutoff == 0:
+        print('Skip high-pass filtering')
+        return None
     """Filter to use for high-pass filtering."""
     NT = 30122
     
