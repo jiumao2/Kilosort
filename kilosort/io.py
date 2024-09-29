@@ -603,7 +603,7 @@ class BinaryRWFile:
             self.n_batches -= 1
             self.imax -= batch_size
 
-        mode = 'w+' if write else 'r'
+        self.file_mode = 'w+' if write else 'r'
         # Must use total samples for file shape, otherwise the end of the data
         # gets cut off if tmin,tmax are set.
         if file_object is not None:
@@ -611,7 +611,7 @@ class BinaryRWFile:
             # such as a NumPy memmap
             self.file = file_object
         else:
-            self.file = np.memmap(self.filename, mode=mode, dtype=self.dtype,
+            self.file = np.memmap(self.filename, mode=self.file_mode, dtype=self.dtype,
                                   shape=(total_samples, self.n_chan_bin))
 
     @property
@@ -740,6 +740,10 @@ class BinaryRWFile:
             raise ValueError('Binary file has been closed, data not accessible.')
 
         bstart, bend = self.get_batch_edges(ibatch)
+
+        # recreate the memmap to clear the mempry
+        self.file = np.memmap(self.filename, mode=self.file_mode, dtype=self.dtype,
+                                  shape=(self.n_samples, self.n_chan_bin))
         data = self.file[bstart : bend]
         data = data.T
 
